@@ -26,7 +26,7 @@ public class Prod {
         this.company = company;
         this.companyTel = companyTel;
     }
-    public ProdDTO toDto(){
+    public ProdDTO toDTO(){
         return new ProdDTO(oId,uId,orderDate,productName,amount,status,company,companyTel);
     }
 

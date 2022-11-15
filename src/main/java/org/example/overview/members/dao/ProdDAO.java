@@ -70,8 +70,8 @@ public class ProdDAO implements IProdDAO{
                         rs.getString("amount"),
                         rs.getString("status"),
                         rs.getString("company"),
-                        rs.getString("companyTel");
-                )}
+                        rs.getString("companyTel"));
+            }
             }catch (SQLException err){
             err.printStackTrace();
         }finally {
@@ -81,6 +81,89 @@ public class ProdDAO implements IProdDAO{
     }
    @Override
    public List<Prod> selectDate(String uId, String start, String end){
+        List<Prod> prodList = new LinkedList<>();
+        try{
+            conn = JDBCMgr.getConnection();
+            stmt = conn.prepareStatement(PROD_SEARCH_DATE);
+            stmt.setString(1,start);
+            stmt.setString(2,end);
 
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                if (rs.getString("uId").equals(uId)) {
+                    prodList.add(new Prod(
+                            rs.getString("oId"),
+                            rs.getString("uId"),
+                            rs.getString("orderDate"),
+                            rs.getString("productName"),
+                            rs.getString("amount"),
+                            rs.getString("status"),
+                            rs.getString("company"),
+                            rs.getString("companyTel")
+                    ));
+                }
+            }
+        }catch (SQLException err){
+            err.printStackTrace();
+        }finally {
+            JDBCMgr.close(rs,stmt,conn);
+        }
+        return prodList;
+   }
+
+   public int insert(Prod prod){
+        int res = 0;
+
+        try{
+            conn=JDBCMgr.getConnection();
+            stmt=conn.prepareStatement(PROD_INSERT);
+            stmt.setString(1,prod.getoId());
+            stmt.setString(2,prod.getuId());
+            stmt.setString(3,prod.getOrderDate());
+            stmt.setString(1,prod.getProductName());
+            stmt.setString(2,prod.getAmount());
+            stmt.setString(3,prod.getStatus());
+            stmt.setString(1,prod.getCompany());
+            stmt.setString(2,prod.getCompanyTel());
+            res=stmt.executeUpdate();
+        }catch (SQLException err){
+            err.printStackTrace();
+        }finally {
+            JDBCMgr.close(stmt,conn);
+        }
+        return res;
+   }
+
+   @Override
+    public int delete(String oId){
+        int res = 0;
+
+        try{
+            conn=JDBCMgr.getConnection();
+            stmt=conn.prepareStatement(PROD_DELETE);
+            stmt.setString(1,oId);
+            res=stmt.executeUpdate();
+        }catch (SQLException err){
+            err.printStackTrace();
+        }finally {
+            JDBCMgr.close(stmt,conn);
+        }
+        return res;
+   }
+   @Override
+    public int deleteAll(String uId){
+        int res = 0;
+
+        try{
+            conn=JDBCMgr.getConnection();
+            stmt=conn.prepareStatement(PROD_DELETE_ALL);
+            stmt.setString(1,uId);
+            res= stmt.executeUpdate();
+        }catch (SQLException err){
+            err.printStackTrace();
+        }finally {
+            JDBCMgr.close(stmt,conn);
+        }
+        return res;
    }
 }
