@@ -51,5 +51,36 @@ public class ProdDAO implements IProdDAO{
             JDBCMgr.close(rs,stmt,conn);
         }
         return prodList;
+    }
+    @Override
+    public Prod select(String oId){
+        Prod prod = null;
+        try{
+            conn = JDBCMgr.getConnection();
+            stmt=conn.prepareStatement(PROD_SELECT);
+            stmt.setString(1, oId);
+
+            rs=stmt.executeQuery();
+            if(rs.next()){
+                prod=new Prod(
+                        rs.getString("oId"),
+                        rs.getString("uId"),
+                        rs.getString("orderDate"),
+                        rs.getString("productName"),
+                        rs.getString("amount"),
+                        rs.getString("status"),
+                        rs.getString("company"),
+                        rs.getString("companyTel");
+                )}
+            }catch (SQLException err){
+            err.printStackTrace();
+        }finally {
+            JDBCMgr.close(rs,stmt,conn);
         }
+        return prod;
+    }
+   @Override
+   public List<Prod> selectDate(String uId, String start, String end){
+
+   }
 }
